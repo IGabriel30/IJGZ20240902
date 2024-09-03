@@ -16,28 +16,34 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+//crear una lista para almacenar objetos de tipo Categorias(categorias)
+var categorias = new List<Categoria>();
 
-app.MapGet("/weatherforecast", () =>
+//configurar ruta get para obtener todos las categorias
+app.MapGet("/categorias", () =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
 
+    return categorias;
+});
+
+//configurar ruta get para obtener una categoria en especifico por su id
+app.MapGet("/categorias/{id}", (int id) =>
+{
+    //busca una categoria que tenga el id especificado
+    var categoria = categorias.FirstOrDefault(c => c.Id == id);
+    return categoria;//devuelve la categoria encontrada o null sino la encuentra
+});
+
+//configurar una ruta POST para agregar un nuevo cliente  ala lista
+app.MapPost("/categorias", (Categoria categoria) =>
+{
+    categorias.Add(categoria);//agrega nuevo cliente a la lista
+    return Results.Ok();//devuelve una respuesta HTTP 200 OK
+});
 app.Run();
 
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
+internal class Categoria
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public int Id { get; set; }
+    public string Name { get; set; }
 }
