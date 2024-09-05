@@ -17,29 +17,22 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 //crear una lista para almacenar objetos de tipo Categorias(categorias)
-var categorias = new List<Categoria>();
+var categorias = new List<Categoria>() {
+    new Categoria { Id = 1, Name = "Ropa" },
+    new Categoria { Id = 2, Name = "Bebidas" },
+    new Categoria { Id = 3, Name = "Alimentos" }
+};
 
 //configurar ruta get para obtener todos las categorias
 app.MapGet("/categorias", () =>
 {
 
-    return categorias;
+    return Results.Ok(categorias);
 });
 
-//configurar ruta get para obtener una categoria en especifico por su id
-app.MapGet("/categorias/{id}", (int id) =>
-{
-    //busca una categoria que tenga el id especificado
-    var categoria = categorias.FirstOrDefault(c => c.Id == id);
-    return categoria;//devuelve la categoria encontrada o null sino la encuentra
-});
 
-//configurar una ruta POST para agregar un nuevo cliente  ala lista
-app.MapPost("/categorias", (Categoria categoria) =>
-{
-    categorias.Add(categoria);//agrega nuevo cliente a la lista
-    return Results.Ok();//devuelve una respuesta HTTP 200 OK
-});
+
+
 app.Run();
 
 internal class Categoria
